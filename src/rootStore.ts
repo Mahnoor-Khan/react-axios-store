@@ -2,10 +2,11 @@ import { applySnapshot, getSnapshot, Instance, types } from "mobx-state-tree"
 import makeInspectable from 'mobx-devtools-mst'
 
 import { useMemo } from "react"
+import { initTodo, TodoListModal } from "./store/todoStore"
 
 const RootStore = types
   .model({
-    // employeeTypeModal: employeeTypeModal,
+    TodoListModal: TodoListModal,
   })
   .actions((self) => {
     let initialState = {}
@@ -27,7 +28,7 @@ export function initializeStore(snapshot = null) {
   const _store =
     store ??
     RootStore.create({
-      // employeeTypeModal: initEmployeeTypeModal(),
+      TodoListModal: initTodo(),
     
     })
   if (snapshot) {

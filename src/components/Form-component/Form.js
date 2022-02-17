@@ -1,9 +1,9 @@
 
-import React, { Component, useRef, useState } from 'react';
+import React, { Component, useEffect, useRef, useState } from 'react';
 import style from './style.form.module.scss';
 import { Input,Button } from 'antd';
-// import {todos} from './store/todoStore.jsx'
-import todos from '../../store/todoStore'
+import { useStore } from '../../rootStore';
+// import todos from '../../store/todoStore'
 
 
 const Form = () => {
@@ -12,17 +12,26 @@ const Form = () => {
         Task.current.value=e.target.value
     }
     
+    const {
+        TodoListModal: { getTodo, getTOODO},
+      } = useStore(null)
+
+      useEffect(() => {
+        async function load() {
+          await getTodo()
+        }
+        load()
+      }, [])
+
+      console.log(getTOODO)
     const submit=()=>{
-        setListItem([...listItem , Task.current.value])
+        // todos.setTitle(Task.current.value)
+        // setListItem([...listItem , Task.current.value])
     }
 
     const deleteTask=(ind)=>{
-        listItem.splice(listItem.indexOf(listItem[ind]),1)
-        setListItem([...listItem])
-    }
-    
-    const setTitle=()=>{
-        todos.setTitle('abcd')
+        // listItem.splice(listItem.indexOf(listItem[ind]),1)
+        // setListItem([...listItem])
     }
 
     const [listItem , setListItem]=useState([])
@@ -30,7 +39,7 @@ const Form = () => {
     <div className={style.div1}>
         <Input placeholder="Basic usage" onChange={inputVal} ref={Task}/>
         <Button type="primary" onClick={submit} >Submit</Button>
-        <Button type="primary" onClick={setTitle} >Submit</Button>
+        {/* <Button type="primary" onClick={setTitle} >Submit</Button> */}
         <ul className={style.list}>
         {listItem.map((item , ind)=>{
             return(
@@ -43,7 +52,7 @@ const Form = () => {
         })}
         </ul>
 
-        <h1>{todos.todoList} {todos.todoList}</h1>
+        {/* <h1>{todos.todoList} {todos.todoList}</h1> */}
         </div>
     </> );
 }

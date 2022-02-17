@@ -1,26 +1,35 @@
 import {types , onSnapshot , flow , applySnapshot , getSnapshot} from "mobx-state-tree";
+import Todo from "../Api";
 
-const TodoModal =types.model(
-    "Todo" , {
-        title: types.string,
-        // created : types.Date,
-        complete : types.boolean
+
+export const TodoModal =types.model({
+        title: types.maybeNull(types.string),
+        created : types.maybeNull(types.string),
+        complete : types.maybeNull(types.boolean)
 })
-.actions((self)=>({
-    setTitle(title){
-        self.title = title
-        console.log(title)
-    }
-}))
+
+export const TodoListModal = types.model({
+    data : types.maybeNull(types.array(TodoModal))
+})
 .views((self)=>({
-    get todoList(){
-        return  self.title
+    get getTOODO(){
+        return  self.data
     }
 }))
-const todos = TodoModal.create({
-    title : 'My New Task 1',
-    // created : Date(),
-    complete : true
-})
 
-export default todos
+.actions((self)=>{
+    const getTodo = flow(function* fetchData() {
+        try {
+          const res = yield Todo.getTodo()
+          self.data = res
+        } catch (error) {
+          console.log('error', error);
+        } finally {
+         console.log('ends')
+        }
+      }) 
+      return { getTodo }
+    })
+  export function initTodo() {
+    return TodoListModal.create({})
+  }
